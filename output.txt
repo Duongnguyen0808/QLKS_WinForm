@@ -1,0 +1,82 @@
+Msg 3701, Level 11, State 1, Server DESKTOP-RJK03JE\SQL01, Line 1
+Cannot drop the database 'QLKS', because it does not exist or you do not have permission.
+Changed database context to 'QLKS'.
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+Msg 2628, Level 16, State 1, Server DESKTOP-RJK03JE\SQL01, Line 1
+String or binary data would be truncated in table 'QLKS.dbo.PHONG', column 'tenP'. Truncated value: 'Phòng Ghế Tình y'.
+The statement has been terminated.
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+
+(1 rows affected)
+Msg 547, Level 16, State 1, Server DESKTOP-RJK03JE\SQL01, Line 1
+The ALTER TABLE statement conflicted with the FOREIGN KEY constraint "FK__CHITIETTIEN__maP__59063A47". The conflict occurred in database "QLKS", table "dbo.PHONG", column 'maP'.

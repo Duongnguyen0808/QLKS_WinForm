@@ -463,12 +463,14 @@ namespace GUI.GUI_ROOM
             {
                 if (action == 0)
                 {
-                    for (int i = 0; i < dtTienIch.Rows.Count; i++)
+                    // Duyệt ngược để tránh lỗi index khi xóa
+                    for (int i = dtTienIch.Rows.Count - 1; i >= 0; i--)
                     {
                         if (tbTienIchPhong.SelectedRows[0].Cells[1].Value.ToString().Equals(dtTienIch.Rows[i][0].ToString()))
                         {
                             dtTienIch.Rows.Remove(dtTienIch.Rows[i]);
                             ResetTI();
+                            break; // Thoát khỏi vòng lặp sau khi xóa
                         }
                     }
                 }
@@ -516,13 +518,15 @@ namespace GUI.GUI_ROOM
                 {
                     if (action == 0)
                     {
-                        for (int i = 0; i < dtTienIch.Rows.Count; i++)
+                        // Duyệt ngược để tránh lỗi index
+                        for (int i = dtTienIch.Rows.Count - 1; i >= 0; i--)
                         {
                             if (tbTienIchPhong.SelectedRows[0].Cells[1].Value.ToString().Equals(dtTienIch.Rows[i][0].ToString()))
                             {
                                 dtTienIch.Rows[i][2] = spinerSLPhong.Value;
                                 spinerSLPhong.Value = 0;
                                 ResetTI();
+                                break; // Thoát khỏi vòng lặp sau khi sửa
                             }
                         }
                     }

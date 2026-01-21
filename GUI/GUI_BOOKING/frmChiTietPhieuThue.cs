@@ -48,23 +48,39 @@ namespace GUI.GUI_BOOKING
         private void renderTongTien()
         {
             int total = 0;
+            // Tính tổng tiền phòng
             for (int i = 0; i < tbRoom.Rows.Count; i++)
             {
                 try
                 {
-                    total += int.Parse(tbRoom.Rows[i].Cells[8].Value.ToString().Replace(",", "").Split(' ')[0]);
+                    string giaPhong = tbRoom.Rows[i].Cells[8].Value.ToString()
+                        .Replace(",", "")
+                        .Replace("VNĐ", "")
+                        .Replace(".", "")
+                        .Trim();
+                    if (!giaPhong.Equals("Chưa tính"))
+                    {
+                        total += int.Parse(giaPhong);
+                    }
                 }
                 catch (Exception) { }
             }
+            // Tính tổng tiền dịch vụ
             for (int i = 0; i < tbService.Rows.Count; i++)
             {
                 try
                 {
-                    total += int.Parse(tbService.Rows[i].Cells[6].Value.ToString().Replace(",", "").Split(' ')[0]);
+                    string giaDV = tbService.Rows[i].Cells[6].Value.ToString()
+                        .Replace(",", "")
+                        .Replace("VNĐ", "")
+                        .Replace(".", "")
+                        .Trim();
+                    total += int.Parse(giaDV);
                 }
                 catch (Exception) { }
             }
-            lbTotal.Text = total.ToString("###,###0 VNĐ");
+            // Hiển thị tổng cộng
+            lbTotal.Text = total > 0 ? total.ToString("###,###0 VNĐ") : "0 VNĐ";
         }
         private void HienThiChiTietThuePhong()
         {

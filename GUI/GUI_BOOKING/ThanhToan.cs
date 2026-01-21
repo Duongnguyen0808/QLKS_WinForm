@@ -30,9 +30,13 @@ namespace GUI.GUI_BOOKING
         {
             InitializeComponent();
             this.maCTT = maCTT;
-            HienThiChiTietThueDichVu();
-            HienThiChiTietThuePhong();
             this.DialogResult = DialogResult.Cancel;
+            
+            // Hiển thị danh sách phòng và dịch vụ trước
+            HienThiChiTietThuePhong();
+            HienThiChiTietThueDichVu();
+            
+            // Hiển thị thông tin khách hàng
             List<ChiTietThueDTO> listCTT = ctt.getDSChiTietThue();
             List<KhachHangDTO> listKH = kh.GetDSKH();
             var item = from ctt in listCTT
@@ -43,60 +47,78 @@ namespace GUI.GUI_BOOKING
                            maKH = kh.MaKH,
                            tenKH = kh.TenKH,
                            cMND = kh.CMND,
-                           tienDatCoc = ctt.TienDatCoc.ToString("###,###0 VNĐ"),
+                           tienDatCoc = ctt.TienDatCoc
                        };
             var it = item.First();
             txtCMND.Text = it.cMND.ToString();
-            txtDatCoc.Text = it.tienDatCoc;
+            txtDatCoc.Text = it.tienDatCoc.ToString("###,###0 VNĐ");
             txtTenKH.Text = it.tenKH;
+            
+            // Tính giảm giá theo số lần thuê
             int soLan = kh.SoLanThue(it.maKH);
             txtSL.Text = soLan.ToString();
-            txtGiamGia.Text = "0%";
-            if (soLan >= 5 && soLan < 10)
+            if (soLan >= 20)
             {
-                txtGiamGia.Text = "5%";
+                txtGiamGia.Text = "20%";
             }
-            else if (soLan >= 10 && soLan < 15)
-            {
-                txtGiamGia.Text = "10%";
-            }
-            else if (soLan >= 15 && soLan < 20)
+            else if (soLan >= 15)
             {
                 txtGiamGia.Text = "15%";
             }
-            else if (soLan >= 20)
+            else if (soLan >= 10)
             {
-                txtGiamGia.Text = "20%";
+                txtGiamGia.Text = "10%";
+            }
+            else if (soLan >= 5)
+            {
+                txtGiamGia.Text = "5%";
             }
             else
             {
                 txtGiamGia.Text = "0%";
             }
+            
+            // Tính tổng thành tiền sau khi có đầy đủ dữ liệu
+            HienThiThongTin();
         }
         private void renderTongTien()
         {
-            int total = 0;
+            // Tính tổng tiền phòng
+            int totalRoom = 0;
             for (int i = 0; i < tbRoom.Rows.Count; i++)
             {
                 try
                 {
-                    total += int.Parse(tbRoom.Rows[i].Cells[6].Value.ToString().Replace(",", "").Split(' ')[0]);
+                    string giaPhong = tbRoom.Rows[i].Cells[6].Value.ToString()
+                        .Replace(",", "")
+                        .Replace("VNĐ", "")
+                        .Replace(".", "")
+                        .Trim();
+                    totalRoom += int.Parse(giaPhong);
                 }
                 catch (Exception) { }
             }
-            txtTotalRoom.Text = total.ToString("###,###0 VNĐ");
-            total = 0;
+            txtTotalRoom.Text = totalRoom > 0 ? totalRoom.ToString("###,###0 VNĐ") : "0 VNĐ";
+            
+            // Tính tổng tiền dịch vụ
+            int totalService = 0;
             for (int i = 0; i < tbService.Rows.Count; i++)
             {
                 try
                 {
-                    total += int.Parse(tbService.Rows[i].Cells[6].Value.ToString().Replace(",", "").Split(' ')[0]);
+                    string giaDV = tbService.Rows[i].Cells[6].Value.ToString()
+                        .Replace(",", "")
+                        .Replace("VNĐ", "")
+                        .Replace(".", "")
+                        .Trim();
+                    totalService += int.Parse(giaDV);
                 }
                 catch (Exception) { }
             }
-            if (total > 0)
-                txtTotalService.Text = total.ToString("###,###0 VNĐ");
-            else txtTotalService.Text = total.ToString("0 VNĐ");
+            txtTotalService.Text = totalService > 0 ? totalService.ToString("###,###0 VNĐ") : "0 VNĐ";
+            
+            // Tự động tính lại tổng thành tiền
+            HienThiThongTin();
         }
         private void HienThiChiTietThuePhong()
         {
@@ -168,30 +190,94 @@ namespace GUI.GUI_BOOKING
             tbService.ClearSelection();
             CbPhuThu.SelectedIndex = 0;
             cbPTTT.SelectedIndex = 0;
+            // Tính tổng thành tiền khi form load
+            HienThiThongTin();
         }
         private void HienThiThongTin()
         {
             int totalPhong = 0;
             try
             {
-                totalPhong = int.Parse(txtTotalRoom.Text.Replace(",", "").Split(' ')[0]);
+                string txtRoom = txtTotalRoom.Text
+                    .Replace(",", "")
+                    .Replace("VNĐ", "")
+                    .Replace(".", "")
+                    .Trim();
+                if (!string.IsNullOrEmpty(txtRoom) && txtRoom != "0")
+                {
+                    totalPhong = int.Parse(txtRoom);
+                }
             }
             catch { }
 
             int totalDichVu = 0;
             try
             {
-                totalDichVu = int.Parse(txtTotalService.Text.Replace(",", "").Split(' ')[0]);
+                string txtService = txtTotalService.Text
+                    .Replace(",", "")
+                    .Replace("VNĐ", "")
+                    .Replace(".", "")
+                    .Trim();
+                if (!string.IsNullOrEmpty(txtService) && txtService != "0")
+                {
+                    totalDichVu = int.Parse(txtService);
+                }
             }
             catch { }
 
-            int tienDatCoc = int.Parse(txtDatCoc.Text.Replace(",", "").Split(' ')[0]);
-            int phuThuPercent = int.Parse(CbPhuThu.SelectedItem.ToString().Replace("%", ""));
-            int phuThu = (totalPhong + totalDichVu) * phuThuPercent / 100;
-            int giamGiaPercent = int.Parse(txtGiamGia.Text.Replace("%", ""));
-            int giamGia = (totalPhong + totalDichVu) * giamGiaPercent / 100;
-            TongThanhTien.Text = (totalPhong + totalDichVu - tienDatCoc - giamGia + phuThu).ToString();
-            txtTienThoiLai.Text = TongThanhTien.Text;
+            int tienDatCoc = 0;
+            try
+            {
+                string txtCoc = txtDatCoc.Text
+                    .Replace(",", "")
+                    .Replace("VNĐ", "")
+                    .Replace(".", "")
+                    .Trim();
+                if (!string.IsNullOrEmpty(txtCoc))
+                {
+                    tienDatCoc = int.Parse(txtCoc);
+                }
+            }
+            catch { }
+
+            int phuThuPercent = 0;
+            try
+            {
+                if (CbPhuThu.SelectedItem != null)
+                {
+                    string phuThuText = CbPhuThu.SelectedItem.ToString()
+                        .Replace("%", "")
+                        .Trim();
+                    if (!string.IsNullOrEmpty(phuThuText))
+                    {
+                        phuThuPercent = int.Parse(phuThuText);
+                    }
+                }
+            }
+            catch { }
+
+            int giamGiaPercent = 0;
+            try
+            {
+                string giamGiaText = txtGiamGia.Text
+                    .Replace("%", "")
+                    .Trim();
+                if (!string.IsNullOrEmpty(giamGiaText))
+                {
+                    giamGiaPercent = int.Parse(giamGiaText);
+                }
+            }
+            catch { }
+
+            // Tính toán theo công thức
+            int tongTam = totalPhong + totalDichVu;
+            int phuThu = tongTam * phuThuPercent / 100;
+            int giamGia = tongTam * giamGiaPercent / 100;
+            int tongThanhTien = tongTam - tienDatCoc - giamGia + phuThu;
+            
+            // Hiển thị với format
+            TongThanhTien.Text = tongThanhTien.ToString("###,###0 VNĐ");
+            txtTienThoiLai.Text = tongThanhTien.ToString("###,###0 VNĐ");
         }
 
         private void tbRoom_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
@@ -406,7 +492,35 @@ namespace GUI.GUI_BOOKING
         }
         private void btnThanhToan_Click(object sender, EventArgs e)
         {
-            int total = int.Parse(TongThanhTien.Text);
+            // Parse tổng tiền để kiểm tra
+            int total = 0;
+            try
+            {
+                string totalText = TongThanhTien.Text
+                    .Replace(",", "")
+                    .Replace("VNĐ", "")
+                    .Replace(".", "")
+                    .Trim();
+                if (!string.IsNullOrEmpty(totalText))
+                {
+                    total = int.Parse(totalText);
+                }
+            }
+            catch
+            {
+                MessageBoxDialog messageError = new MessageBoxDialog();
+                messageError.ShowDialog("Thông báo", "Lỗi", "Không thể tính tổng tiền thanh toán", MessageBoxDialog.ERROR, MessageBoxDialog.YES, "Đóng", "", "");
+                return;
+            }
+
+            // Kiểm tra tổng tiền
+            if (total <= 0)
+            {
+                MessageBoxDialog messageError = new MessageBoxDialog();
+                messageError.ShowDialog("Thông báo", "Thông báo", "Vui lòng kiểm tra lại thông tin thanh toán", MessageBoxDialog.ERROR, MessageBoxDialog.YES, "Đóng", "", "");
+                return;
+            }
+
             if (txtTienKhachDua.Text.Trim().Length == 0)
             {
                 MessageBoxDialog messageError = new MessageBoxDialog();
@@ -414,7 +528,20 @@ namespace GUI.GUI_BOOKING
                 txtTienKhachDua.Focus();
                 return;
             }
-            int tienKhachDua = int.Parse(txtTienKhachDua.Text);
+
+            int tienKhachDua = 0;
+            try
+            {
+                tienKhachDua = int.Parse(txtTienKhachDua.Text);
+            }
+            catch
+            {
+                MessageBoxDialog messageError = new MessageBoxDialog();
+                messageError.ShowDialog("Thông báo", "Lỗi", "Tiền khách đưa không hợp lệ", MessageBoxDialog.ERROR, MessageBoxDialog.YES, "Đóng", "", "");
+                txtTienKhachDua.Focus();
+                return;
+            }
+
             if (total > tienKhachDua)
             {
                 MessageBoxDialog messageError = new MessageBoxDialog();
@@ -422,6 +549,7 @@ namespace GUI.GUI_BOOKING
                 txtTienKhachDua.Focus();
                 return;
             }
+            
             MessageBoxDialog messageQuestion = new MessageBoxDialog();
             int ans = messageQuestion.ShowDialog("Thông báo", "Thanh toán", "Bạn có muốn thanh toán hóa đơn này không?", MessageBoxDialog.INFO, MessageBoxDialog.YES_NO, "Đồng ý", "Không đồng ý", "");
             if (ans == MessageBoxDialog.YES_OPTION)
@@ -429,8 +557,10 @@ namespace GUI.GUI_BOOKING
                 #region Thêm hóa đơn mới
                 HoaDonBUS hd = new HoaDonBUS();
                 string maHD = "HD" + DateTime.Now.ToString("ddMMyy") + hd.SoLuongHD(DateTime.Now.ToString("yyyy-MM-dd")).ToString("D5");
-                string GiamGia = txtGiamGia.Text.Replace("%", "");
-                string phuThu = CbPhuThu.SelectedItem.ToString().Replace("%", "");
+                string GiamGia = txtGiamGia.Text.Replace("%", "").Trim();
+                if (string.IsNullOrEmpty(GiamGia)) GiamGia = "0";
+                string phuThu = CbPhuThu.SelectedItem != null ? CbPhuThu.SelectedItem.ToString().Replace("%", "").Trim() : "0";
+                if (string.IsNullOrEmpty(phuThu)) phuThu = "0";
                 string ngayThanhToan = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 hd.ThemHoaDon(maHD, maCTT, GiamGia, phuThu, ngayThanhToan, cbPTTT.SelectedIndex.ToString());
                 #endregion
@@ -478,9 +608,26 @@ namespace GUI.GUI_BOOKING
             }
             else
             {
-                int total = int.Parse(TongThanhTien.Text);
-                int tienKhachDua = int.Parse(txtTienKhachDua.Text);
-                txtTienThoiLai.Text = (tienKhachDua - total).ToString();
+                try
+                {
+                    // Parse TongThanhTien
+                    string totalText = TongThanhTien.Text
+                        .Replace(",", "")
+                        .Replace("VNĐ", "")
+                        .Replace(".", "")
+                        .Trim();
+                    int total = int.Parse(totalText);
+                    
+                    int tienKhachDua = int.Parse(txtTienKhachDua.Text);
+                    int tienThoiLai = tienKhachDua - total;
+                    
+                    // Format hiển thị
+                    txtTienThoiLai.Text = tienThoiLai.ToString("###,###0 VNĐ");
+                }
+                catch
+                {
+                    txtTienThoiLai.Text = "0 VNĐ";
+                }
             }
         }
 

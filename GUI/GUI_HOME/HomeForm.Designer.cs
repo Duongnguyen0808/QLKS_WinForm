@@ -1,4 +1,4 @@
-ï»¿namespace GUI.GUI_HOME
+namespace GUI.GUI_HOME
 {
     partial class HomeForm
     {
@@ -191,7 +191,7 @@
             this.webView21.Location = new System.Drawing.Point(272, 10);
             this.webView21.Name = "webView21";
             this.webView21.Size = new System.Drawing.Size(924, 445);
-            this.webView21.Source = new System.Uri("https://maps.app.goo.gl/XHHvsur3nux8gfB66", System.UriKind.Absolute);
+            this.webView21.Source = new System.Uri("https://maps.app.goo.gl/HjUhPnbc1Rc1mTdJ9", System.UriKind.Absolute);
             this.webView21.TabIndex = 1;
             this.webView21.ZoomFactor = 1D;
             // 
@@ -216,7 +216,7 @@
             this.Opacity = 0D;
             this.Padding = new System.Windows.Forms.Padding(15);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "MÃ n hÃ¬nh chÃ­nh";
+            this.Text = "Màn hình chính";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.HomeForm_Load);
             this.panelRounded1.ResumeLayout(false);
