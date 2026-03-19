@@ -320,13 +320,13 @@ namespace GUI.GUI_BOOKING
             Paragraph p = new Paragraph("KHÁCH SẠN LUXURY", fontTitle);
             p.Alignment = Element.ALIGN_CENTER;
             document.Add(p);
-            Paragraph p2 = new Paragraph("Địa chỉ: 273 An Dương Vương, Phường 3, Quận 5, Tp Hồ Chí Minh", font);
+            Paragraph p2 = new Paragraph("Địa chỉ: 236 Đ. Lê Văn Sỹ, Phường Tân Sơn Hòa, Hồ Chí Minh, Việt Nam", font);
             p2.Alignment = Element.ALIGN_CENTER;
             document.Add(p2);
-            Paragraph p3 = new Paragraph("Hotline Booking: 0987654321", font);
+            Paragraph p3 = new Paragraph("Hotline Booking: 0703076546", font);
             p3.Alignment = Element.ALIGN_CENTER;
             document.Add(p3);
-            Paragraph p4 = new Paragraph("Fax: 0987654321", font);
+            Paragraph p4 = new Paragraph("Fax: 0703076546", font);
             p4.Alignment = Element.ALIGN_CENTER;
             document.Add(p4);
             Paragraph pEmpty = new Paragraph("  ", fontTitle);
