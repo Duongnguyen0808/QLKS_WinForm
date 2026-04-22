@@ -120,7 +120,7 @@ Efficiently handle guest information and history.
 
 1. **Clone the repository**:  
    ```bash  
-   git clone https://github.com/WNormanTPN/hotel-management-system  
+   git clone https://github.com/Duongnguyen0808/QLKS_WinForm 
 2. **Using Microsoft Visual Studio to open solution.**
 3. **Run for debug or build solution for release.**
 
